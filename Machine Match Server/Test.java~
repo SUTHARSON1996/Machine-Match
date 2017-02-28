@@ -1,0 +1,36 @@
+import java.util.*;
+import java.io.*;
+import java.net.*;
+
+public class Test{
+
+
+    public static void main(String[] args)throws Throwable{
+        ServerSocket server = new ServerSocket(5000);
+        Socket soc = server.accept();
+
+	ObjectInputStream ois = new ObjectInputStream(soc.getInputStream());
+	byte[] buffer = (byte[])ois.readObject();
+	FileOutputStream fos = new FileOutputStream("test.jpg");
+	fos.write(buffer);
+
+
+	Process p = Runtime.getRuntime().exec("java ExtractData");
+	BufferedReader tempBuf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	String mac = tempBuf.readLine().toString();;
+		
+	PrintStream print = new PrintStream(soc.getOutputStream());
+	print.writeln(mac);
+	
+	print.close();
+	ois.close();
+	soc.close();
+	server.close();
+		
+	
+
+    }
+
+
+}
+
